@@ -38,7 +38,7 @@ python starter.py --test ../Data/Protein_Info/lib/MEK1-sin_lib.tsv \
 - For structure information preparation, once the `.pdb` file is ready, you can directly process the `.pdf` file with `./StructMap.py` in `./Toolbox/`, which will generate the structure file needed for model training.
 
 To perform data collection simulations on GB1, use `simulation.py` in `./GB1_simulation/DE/` for DE method, use `GB1_MLDEtrain.sh` in `./Toolbox/Ankh-MLP/` for the MLDE method. DMS method can be simulated by directly drawing all the single mutants plus 1,000 random double mutants from `./Data/Protein_Info/score/GB1_56aa_all.tsv`
-The prediction performance can be compared directly:
+The prediction performance can be compared directly.
 For DE-based methods, training and testing could be done with:
 ```
 python starter.py --train ../Data/Protein_Info/score/GB1_DE_2k.tsv \
