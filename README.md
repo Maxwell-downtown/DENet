@@ -94,9 +94,19 @@ The screening results can then be collected with `lib_collect.sh` (`./output/lib
 Top scoring mutants are selected into a separate tsv file(`GFP_AEQVI_t10k.tsv`), which were processed by `Seqlib_builder2.py` in `./Toolbox/` into `.psc` file. The `.psc` file can be further processed by CCMpred to generate the `.braw` file we need(`GFP_AEQVI_DEh10k.braw`).
 The full DENet can be trained and tested using the co-mutation data from the `.braw file` we obtained above:
 ```
-python starter.py --train ../Data/Protein_Info/score/GFP_AEQVI/sin.tsv --fasta ../Data/Protein_Info/seq/GFP_AEQVI.fasta --comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw --structure ../Data/Protein_Info/struct/GFP_AEQVI/ --output_dir ./output/GFP_AEQVI --epochs 500 --use_gcn --save_log --save_prediction --save_checkpoint
+python starter.py --train ../Data/Protein_Info/score/GFP_AEQVI/sin.tsv \
+--fasta ../Data/Protein_Info/seq/GFP_AEQVI.fasta \
+--comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw \
+--structure ../Data/Protein_Info/struct/GFP_AEQVI/ \
+--output_dir ./output/GFP_AEQVI --epochs 500 \
+--use_gcn --save_log --save_prediction --save_checkpoint
 
-python starter.py --test ../Data/Protein_Info/score/GFP_AEQVI/double.tsv --fasta ../Data/Protein_Info/seq/GFP_AEQVI.fasta --comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw --structure ../Data/Protein_Info/struct/GFP_AEQVI/ --output_dir ./output/GFP_AEQVI/doubleTest --use_gcn --save_log --save_prediction --saved_model_dir ./output/GFP_AEQVI/
+python starter.py --test ../Data/Protein_Info/score/GFP_AEQVI/double.tsv \
+--fasta ../Data/Protein_Info/seq/GFP_AEQVI.fasta \
+--comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw \
+--structure ../Data/Protein_Info/struct/GFP_AEQVI/ \
+--output_dir ./output/GFP_AEQVI/doubleTest --use_gcn \
+--save_log --save_prediction --saved_model_dir ./output/GFP_AEQVI/
 ```
 The upper process can also be compared with DENet using co-mutation information from MSA of homologous sequences or without co-mutation information by changing `--comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw` to `--comutation ../Data/Protein_Info/seq/GFP_AEQVI.braw` or `--no_comutation`
 
