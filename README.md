@@ -13,7 +13,7 @@ Note: The Ankh (large) model will be automatically fetched from the Hugging Face
 The co-mutation information files used by DENet can be found in this [Figshare link](https://figshare.com/s/2224ffd3d20231ea8a45), under the `./Data/Protein_info/seq/` directory. Download the corresponding `***.braw` and add them to the same `./Data/Protein_info/seq/` directory in your DENet file. 
 
 ## Running DENet ##
-Model training can be done with the following command (take MEK1 for example):
+Model training can be done using codes under `./DENet` with the following command (take MEK1 for example):
 ```
 python starter.py --train ../Data/Protein_Info/score/MEK1_DE.tsv \
 --fasta ../Data/Protein_Info/seq/MEK1.fasta \
