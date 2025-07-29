@@ -2,7 +2,7 @@
 Code and data for running DENet.
 
 ## Installation ##
-After downloading the DENet data files, one can directly configure the conda environment with the following command:
+After downloading the DENet repository, one can directly configure the conda environment with the following command:
 ```
 conda env create -f DENet_environment.yml
 conda activate DENet
@@ -26,4 +26,24 @@ python starter.py --test ../Data/Protein_Info/lib/MEK1-sin_lib.tsv --fasta ../Da
 - To apply DENet on your own data, structure and co-mutation information need to be prepared. Though you can skip either of these two extra modality through `--no_comutation`, or without adding `--use_gcn`. 
 - For co-mutation information preparation, highly enriched mutant library can be extracted from counts files of different time points along the DE trajectories with `./Seqlib_builder.py` in `./Toolbox/`. This will give you a `.psc` file, which needs to be further processed by CCMpred to generate the eventual `.braw` file. (For DMS data, `.psc` file can be obtained through homologous sequence searching and MSA of the target protein using tools such as hhblits)
 - For structure information preparation, once the `.pdb` file is ready, you can directly process the `.pdf` file with `./StructMap.py` in `./Toolbox/`, which will generate the structure file needed for model training. 
+
+## DENet with in-silico directed evolution ##
+In-silico DE can serve as an alternative sources for co-mutation information extraction and used for DENet training.
+To perform in silico directed evolution with a simplified Ankh-MLP model, use the model in `./Toolbox` (go to  `./Toolbox/Ankh_MLP`). You can train the model similarly with the following codes(take GFP_AEQVI for example):
+```
+python starter.py --train ../../Data/Protein_Info/score/GFP_AEQVI/sin.tsv --fasta ../../Data/Protein_Info/seq/GFP_AEQVI.fasta --output_dir output/sin_high/GFP_AEQVI --n_ensembles 3 --save_log --save_prediction --save_checkpoint
+
+python starter.py --test ../../Data/Protein_Info/lib/GFP_AEQVI-sin_lib.tsv --fasta ../../Data/Protein_Info/seq/GFP_AEQVI.fasta --output_dir output/sin_high/GFP_AEQVI/sin/ --n_ensembles 3 --save_log --save_prediction --saved_model_dir output/sin_high/GFP_AEQVI
+```
+After predicting the scores for all single mutants for GFP_AEQVI(`GFP_AEQVI-sin_lib.tsv`), the top 100 scoring single mutants are selected and used to compose the double mutant library for virtual screening with `./library/db_mut.py` under Ankh_MLP. To avoid CUDA out of memory errors, use `./library/lib_split.sh` to split the screening file into smaller pieces. 
+Testing on the screening files can then be done with `batch_test.sh` under the `./Ankh_MLP` directory.
+The screening results can then be collected with `lib_collect.sh` (`./output/lib_collect.sh`).
+Top scoring mutants are selected into a separate tsv file(`GFP_AEQVI_t10k.tsv`), which were processed by `Seqlib_builder2.py` in `./Toolbox/` into `.psc` file. The `.psc` file can be further processed by CCMpred to generate the `.braw` file we need(`GFP_AEQVI_DEh10k.braw`).
+The full DENet can be trained and tested using the co-mutation data from the `.braw file` we obtained above:
+```
+python starter.py --train ../Data/Protein_Info/score/GFP_AEQVI/sin.tsv --fasta ../Data/Protein_Info/seq/GFP_AEQVI.fasta --comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw --structure ../Data/Protein_Info/struct/GFP_AEQVI/ --output_dir ./output/GFP_AEQVI --epochs 500 --use_gcn --save_log --save_prediction --save_checkpoint
+
+python starter.py --test ../Data/Protein_Info/score/GFP_AEQVI/double.tsv --fasta ../Data/Protein_Info/seq/GFP_AEQVI.fasta --comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw --structure ../Data/Protein_Info/struct/GFP_AEQVI/ --output_dir ./output/GFP_AEQVI/doubleTest --use_gcn --save_log --save_prediction --saved_model_dir ./output/GFP_AEQVI/
+```
+The upper process can also be compared with DENet using co-mutation information from MSA of homologous sequences or without co-mutation information by changing `--comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw` to `--comutation ../Data/Protein_Info/seq/GFP_AEQVI.braw` or `--no_comutation`
 
