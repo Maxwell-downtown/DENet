@@ -35,7 +35,7 @@ python starter.py --test ../Data/Protein_Info/lib/MEK1-sin_lib.tsv \
 ```
 - To apply DENet on your own data, structure and co-mutation information need to be prepared. Though you can skip either of these two extra modality through `--no_comutation`, or without adding `--use_gcn`. 
 - For co-mutation information preparation, highly enriched mutant library can be extracted from counts files of different time points along the DE trajectories with `./Seqlib_builder.py` in `./Toolbox/`. This will give you a `.psc` file, which needs to be further processed by CCMpred to generate the eventual `.braw` file. (For DMS data, `.psc` file can be obtained through homologous sequence searching and MSA of the target protein using tools such as hhblits)
-- For structure information preparation, once the `.pdb` file is ready, you can directly process the `.pdf` file with `./StructMap.py` in `./Toolbox/`, which will generate the structure file needed for model training.
+- For structure information preparation, once the `.pdb` file is ready, you can directly process the `.pdb` file with `./StructMap.py` in `./Toolbox/`, which will generate the structure file needed for model training.
 
 To perform data collection simulations on GB1, use `simulation.py` in `./GB1_simulation/DE/` for DE method, use `GB1_MLDEtrain.sh` in `./Toolbox/Ankh-MLP/` for the MLDE method. DMS method can be simulated by directly drawing all the single mutants plus 1,000 random double mutants from `./Data/Protein_Info/score/GB1_56aa_all.tsv`
 The prediction performance can be compared directly.
