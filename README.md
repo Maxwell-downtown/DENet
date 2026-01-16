@@ -22,7 +22,7 @@ python starter.py --train ../Data/Protein_Info/score/MEK1_DE.tsv \
 --output_dir ./output/MEK1_DE --epochs 500 --use_gcn \
 --save_log --save_prediction --save_checkpoint
 ```
-The upper training process used co-mutation information extracted from DE experiment trajectories (`MEK1_DEh8k.braw`), you can compare the training results with co-mutation data from traditional MSA of homologous sequences or using no co-mutation at all (change `--comutation ../Data/Protein_Info/seq/MEK1_DEh8k.braw` to `--comutation ../Data/Protein_Info/seq/MEK1.braw` or `--no_comutation`, respectively)
+The upper training process used co-mutation information extracted from DE experiment trajectories (`MEK1_DEh8k.braw`, can be downloaded from figshare https://figshare.com/s/2224ffd3d20231ea8a45. under the same directory ./Data/Protein_Info/seq/), you can compare the training results with co-mutation data from traditional MSA of homologous sequences or using no co-mutation at all (change `--comutation ../Data/Protein_Info/seq/MEK1_DEh8k.braw` to `--comutation ../Data/Protein_Info/seq/MEK1.braw` or `--no_comutation`, respectively)
 
 You can also applied the trained model to more testing data with the following command:
 ```
