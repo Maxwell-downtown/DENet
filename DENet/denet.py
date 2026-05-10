@@ -40,6 +40,9 @@ class DENet(object):
         self.logger = Logger(logfile=self.saver.save_dir / 'exp.log' if save_log else None)
         self.use_loc_feat = use_loc_feat
         self.use_glob_feat = use_glob_feat
+        self.use_gcn = use_gcn
+        if self.use_gcn and c_map is None:
+            raise ValueError('contact_map from structural file is required when use_gcn=True')
         vocab_size = len(vocab.AMINO_ACIDS)
         seq_len = len(self.dataset.native_sequence)
         proj_loc_config = {
@@ -90,7 +93,7 @@ class DENet(object):
         for i in range(len(self.models)):
             checkpoint_path = f'{checkpoint_dir}/model_{i + 1}.pt'
             self.logger.info('Load pretrained model from {}'.format(checkpoint_path))
-            pt = torch.load(checkpoint_path, weights_only=False)
+            pt = torch.load(checkpoint_path, map_location=self.device, weights_only=False)
             model_dict = self.models[i].state_dict()
             model_pretrained_dict = {k: v for k, v in pt['model_state_dict'].items() if k in model_dict}
             model_dict.update(model_pretrained_dict)
@@ -99,7 +102,7 @@ class DENet(object):
 
     def load_single_pretrained_model(self, checkpoint_path, model=None, optimizer=None, is_resume=False):
         self.logger.info('Load pretrained model from {}'.format(checkpoint_path))
-        pt = torch.load(checkpoint_path, weights_only=False)
+        pt = torch.load(checkpoint_path, map_location=self.device, weights_only=False)
         model_dict = model.state_dict()
         model_pretrained_dict = {k: v for k, v in pt['model_state_dict'].items() if k in model_dict}
         model_dict.update(model_pretrained_dict)
@@ -150,8 +153,10 @@ class DENet(object):
                             glob_feat = batch['glob_feat'].to(self.device)
                         else:
                             glob_feat = None
-                        c_map = np.array(self.c_map)
-                        edge = torch.tensor(c_map).float().to(self.device)
+                        edge = None
+                        if self.use_gcn:
+                            c_map = np.array(self.c_map)
+                            edge = torch.tensor(c_map).float().to(self.device)
                         optimizer.zero_grad()
                         output = model(X, edge=edge, cluster=cluster, glob_feat=glob_feat, loc_feat=loc_feat)
                         output = output.view(-1)
@@ -239,8 +244,10 @@ class DENet(object):
                         glob_feat = batch['glob_feat'].to(self.device)
                     else:
                         glob_feat = None
-                    c_map = np.array(self.c_map)
-                    edge = torch.tensor(c_map).float().to(self.device)
+                    edge = None
+                    if self.use_gcn:
+                        c_map = np.array(self.c_map)
+                        edge = torch.tensor(c_map).float().to(self.device)
                     output = model(X, edge=edge, cluster=cluster, glob_feat=glob_feat, loc_feat=loc_feat)
                     output = output.view(-1)
                     if calc_loss:
