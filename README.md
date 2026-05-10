@@ -4,17 +4,18 @@ Code and data for running DENet.
 ## Installation ##
 After downloading the DENet repository, one can directly configure the conda environment with the following command:
 ```
-conda env create -f DENet_environment.yml
+conda env create -f DENet/DENet_environment.yml
 conda activate DENet
 ```
 
 Note: The Ankh (large) model will be automatically fetched from the Hugging Face Hub on first run. The checkpoint is ~7.5 GB and may take several minutes to download.
 
-The co-mutation information files used by DENet can be found in this [Figshare link](https://figshare.com/s/2224ffd3d20231ea8a45), under the `./Data/Protein_info/seq/` directory. Download the corresponding `***.braw` and add them to the same `./Data/Protein_info/seq/` directory in your DENet file. 
+The co-mutation information files used by DENet can be found in this [Figshare link](https://figshare.com/s/2224ffd3d20231ea8a45), under the `./Data/Protein_Info/seq/` directory. Download the corresponding `***.braw` and add them to the same `./Data/Protein_Info/seq/` directory in your DENet file. 
 
 ## Running DENet ##
 Model training can be done using codes under `./DENet` with the following command (take MEK1 for example):
 ```
+cd DENet
 python starter.py --train ../Data/Protein_Info/score/MEK1_DE.tsv \
 --fasta ../Data/Protein_Info/seq/MEK1.fasta \
 --comutation ../Data/Protein_Info/seq/MEK1_DEh8k.braw \
@@ -33,11 +34,11 @@ python starter.py --test ../Data/Protein_Info/lib/MEK1-sin_lib.tsv \
 --output_dir ./output/MEK1_DE/sin_mutants --epochs 500 --use_gcn \
 --save_log --save_prediction --saved_model_dir ./output/MEK1_DE/
 ```
-- To apply DENet on your own data, structure and co-mutation information need to be prepared. Though you can skip either of these two extra modality through `--no_comutation`, or without adding `--use_gcn`. 
-- For co-mutation information preparation, highly enriched mutant library can be extracted from counts files of different time points along the DE trajectories with `./Seqlib_builder.py` in `./Toolbox/`. This will give you a `.psc` file, which needs to be further processed by CCMpred to generate the eventual `.braw` file. (For DMS data, `.psc` file can be obtained through homologous sequence searching and MSA of the target protein using tools such as hhblits)
+- To apply DENet on your own data, structure and co-mutation information need to be prepared. You can skip either of these two extra modality through `--no_comutation`, or without adding `--use_gcn`. 
+- For co-mutation information preparation, highly enriched mutant library can be extracted from counts files of different time points along the DE trajectories with `./Seqlib_builder2.py` in `./Toolbox/`. This will give you a `.psc` file, which needs to be further processed by CCMpred to generate the eventual `.braw` file. (For DMS data, `.psc` file can be obtained through homologous sequence searching and MSA of the target protein using tools such as hhblits)
 - For structure information preparation, once the `.pdb` file is ready, you can directly process the `.pdb` file with `./StructMap.py` in `./Toolbox/`, which will generate the structure file needed for model training.
 
-To perform data collection simulations on GB1, use `simulation.py` in `./GB1_simulation/DE/` for DE method, use `GB1_MLDEtrain.sh` in `./Toolbox/Ankh-MLP/` for the MLDE method. DMS method can be simulated by directly drawing all the single mutants plus 1,000 random double mutants from `./Data/Protein_Info/score/GB1_56aa_all.tsv`
+To perform data collection simulations on GB1, use `simulation.py` in `./GB1_simulation/DE/` for DE method, use `GB1_MLDEtrain.sh` in `./Toolbox/Ankh_MLP/` for the MLDE method. DMS method can be simulated by directly drawing all the single mutants plus 1,000 random double mutants from `./Data/Protein_Info/score/GB1_56aa_all.tsv`
 The prediction performance can be compared directly.
 For DE-based methods, training and testing could be done with:
 ```
@@ -109,4 +110,3 @@ python starter.py --test ../Data/Protein_Info/score/GFP_AEQVI/double.tsv \
 --save_log --save_prediction --saved_model_dir ./output/GFP_AEQVI/
 ```
 The upper process can also be compared with DENet using co-mutation information from MSA of homologous sequences or without co-mutation information by changing `--comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw` to `--comutation ../Data/Protein_Info/seq/GFP_AEQVI.braw` or `--no_comutation`
-
