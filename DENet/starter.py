@@ -1,4 +1,5 @@
 import argparse
+import pathlib
 import pandas as pd
 import numpy as np
 from denet import DENet
@@ -15,17 +16,23 @@ def normalize(mx):
 
 
 def main():
-    c_maps = []
-    for i in range(0, 1):
-        structure_csv = args.structure + str(i) + '.csv'
-        contact_map = pd.read_csv(structure_csv, header=None)
-        contact_map = contact_map.to_numpy()
-        contact_map = contact_map[:, :]
-        contact_map = normalize(contact_map)
-        c_map = contact_map + np.eye(contact_map.shape[0])
-        c_map = normalize(c_map)
-        #c_map = torch.from_numpy(c_map).float()
-        c_maps.append(c_map)
+    c_maps = None
+    if args.use_gcn:
+        if not args.structure:
+            raise ValueError('--structure is required when --use_gcn is set')
+
+        c_maps = []
+        structure_dir = pathlib.Path(args.structure)
+        for i in range(0, 1):
+            structure_csv = structure_dir / f'{i}.csv'
+            contact_map = pd.read_csv(structure_csv, header=None)
+            contact_map = contact_map.to_numpy()
+            contact_map = contact_map[:, :]
+            contact_map = normalize(contact_map)
+            c_map = contact_map + np.eye(contact_map.shape[0])
+            c_map = normalize(c_map)
+            #c_map = torch.from_numpy(c_map).float()
+            c_maps.append(c_map)
     denet = DENet(output_dir=args.output_dir,
                 train_tsv=args.train,
                 test_tsv=args.test,
@@ -86,5 +93,4 @@ if __name__ == "__main__":
     parser.add_argument('--use_gcn', action='store_true', default=False, help='use gcn or not')
     args = parser.parse_args()
     main()
-
 
