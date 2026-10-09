@@ -110,3 +110,18 @@ python starter.py --test ../Data/Protein_Info/score/GFP_AEQVI/double.tsv \
 --save_log --save_prediction --saved_model_dir ./output/GFP_AEQVI/
 ```
 The upper process can also be compared with DENet using co-mutation information from MSA of homologous sequences or without co-mutation information by changing `--comutation ../Data/Protein_Info/seq/GFP_AEQVI_DEh10k.braw` to `--comutation ../Data/Protein_Info/seq/GFP_AEQVI.braw` or `--no_comutation`
+
+## Citation ##
+If you find this repository useful, please cite our paper:
+```
+@article{song2026navigating,
+  title={Navigating high-order protein fitness landscapes via deep learning on directed evolution trajectories},
+  author={Song, Chengzhi and Ma, Liang and Xue, Lingfeng and Xu, Yingfan and Zhang, Qihan and Liu, Yuxi and Song, Chen and Lin, Yihan},
+  journal={Proceedings of the National Academy of Sciences},
+  volume={123},
+  number={22},
+  pages={e2520561123},
+  year={2026},
+  publisher={National Academy of Sciences}
+}
+```
